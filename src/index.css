@@ -1,0 +1,173 @@
+/* Tokens, reset e peças compartilhadas (botões e modal). */
+
+:root {
+  --casco: #c8102e;
+  --tinta: #14161f;
+  --lente: #35c4f0;
+  --amarelo: #f5c518;
+  --verde: #1f9d4c;
+
+  --tela: #eef0e8;
+  --superficie: #ffffff;
+  --texto: #14161f;
+  --texto-suave: #5d6270;
+  --borda: #d5d8cd;
+  --trilho: #e2e5da;
+  --destaque-stat: var(--texto);
+
+  --fonte-titulo: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --fonte-corpo: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  color-scheme: light;
+}
+
+:root[data-theme="escuro"] {
+  --casco: #b50e29;
+  --tela: #0f1218;
+  --superficie: #1a1e28;
+  --texto: #eef0f5;
+  --texto-suave: #98a0b3;
+  --borda: #2c3140;
+  --trilho: #2a2f3d;
+  --tinta: #05060a;
+  --verde: #4cd98a;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--tela);
+  color: var(--texto);
+  font-family: var(--fonte-corpo);
+  line-height: 1.45;
+}
+
+button,
+select,
+input {
+  font-family: inherit;
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- botões ---------- */
+
+.botao {
+  height: 2.9rem;
+  padding: 0 1.1rem;
+  border: 2px solid var(--borda);
+  border-radius: 0.8rem;
+  background: var(--superficie);
+  color: var(--texto);
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.12s, background 0.12s;
+}
+
+.botao:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: var(--texto-suave);
+}
+
+.botao:focus-visible {
+  outline: 3px solid var(--lente);
+  outline-offset: 2px;
+}
+
+.botao:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.botao-primario {
+  border-color: var(--tinta);
+  background: var(--casco);
+  color: #fff;
+}
+
+.botao-ativo {
+  border-color: var(--amarelo);
+  background: var(--amarelo);
+  color: var(--tinta);
+}
+
+/* ---------- modal ---------- */
+
+.modal-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  overflow-y: auto;
+  background: rgb(5 6 10 / 0.65);
+  backdrop-filter: blur(3px);
+  animation: aparecer 0.18s ease;
+}
+
+.modal {
+  position: relative;
+  max-height: 100%;
+  padding: 1.4rem;
+  overflow-y: auto;
+  border-radius: 1.3rem;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.45);
+  animation: subir 0.22s ease;
+}
+
+.modal-fechar {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  z-index: 2;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 2px solid var(--borda);
+  border-radius: 50%;
+  background: var(--superficie);
+  color: var(--texto);
+  cursor: pointer;
+}
+
+.modal-fechar:focus-visible {
+  outline: 3px solid var(--lente);
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes subir {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

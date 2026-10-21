@@ -1,0 +1,35 @@
+.stat-bar {
+  display: grid;
+  grid-template-columns: 6.5rem 2.5rem 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.stat-rotulo {
+  color: var(--texto-suave);
+  font-weight: 500;
+}
+
+.stat-valor {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.stat-trilho {
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--trilho);
+  overflow: hidden;
+}
+
+.stat-preenchimento {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.45s ease;
+}
+
+.stat-bar-destaque .stat-valor {
+  color: var(--destaque-stat);
+}

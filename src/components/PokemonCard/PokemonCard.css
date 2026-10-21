@@ -1,0 +1,160 @@
+.pokemon-card {
+  position: relative;
+  display: flex;
+  border-radius: 1.1rem;
+  background:
+    radial-gradient(circle at 50% 28%, color-mix(in srgb, var(--cor-tipo) 38%, transparent), transparent 62%),
+    var(--superficie);
+  border: 2px solid color-mix(in srgb, var(--cor-tipo) 45%, var(--borda));
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.pokemon-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cor-tipo);
+}
+
+.card-principal {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 1rem 0.9rem 1rem;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.card-principal:focus-visible,
+.icone-botao:focus-visible {
+  outline: 3px solid var(--lente);
+  outline-offset: 2px;
+}
+
+.card-numero {
+  justify-self: start;
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  color: var(--texto-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.card-imagem {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 8rem;
+}
+
+.card-imagem img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 6px rgb(0 0 0 / 0.25));
+  transition: transform 0.2s ease;
+}
+
+.pokemon-card:hover .card-imagem img {
+  transform: scale(1.08);
+}
+
+.imagem-vazia {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: 4px solid color-mix(in srgb, var(--cor-tipo) 60%, var(--tinta));
+  background: linear-gradient(color-mix(in srgb, var(--cor-tipo) 70%, #fff) 0 46%, var(--tinta) 46% 54%, #fff 54%);
+}
+
+.card-nome {
+  font-family: var(--fonte-titulo);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.card-tipos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem 0.6rem;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.mini-stat {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.1rem 0.2rem;
+  font-size: 0.72rem;
+}
+
+.mini-sigla {
+  color: var(--texto-suave);
+  font-weight: 600;
+  text-align: left;
+}
+
+.mini-valor {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.mini-trilho {
+  grid-column: 1 / -1;
+  height: 0.3rem;
+  border-radius: 99px;
+  background: var(--trilho);
+  overflow: hidden;
+}
+
+.mini-trilho span {
+  display: block;
+  height: 100%;
+  background: var(--cor-tipo);
+}
+
+.card-acoes {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 1;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.icone-botao {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 2px solid var(--borda);
+  border-radius: 50%;
+  background: var(--superficie);
+  color: var(--texto-suave);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.12s, background 0.12s, color 0.12s;
+}
+
+.icone-botao:hover {
+  transform: scale(1.12);
+}
+
+.icone-botao.ligado {
+  border-color: var(--amarelo);
+  background: var(--amarelo);
+  color: var(--tinta);
+}

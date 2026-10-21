@@ -1,0 +1,130 @@
+.treinadores-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.treinadores-topo h2 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 1.6rem;
+}
+
+.treinadores-busca {
+  height: 2.6rem;
+  padding: 0 1rem;
+  border: 2px solid var(--borda);
+  border-radius: 0.8rem;
+  background: var(--superficie);
+  color: var(--texto);
+  font: inherit;
+}
+
+.treinadores-busca:focus-visible {
+  outline: none;
+  border-color: var(--lente);
+}
+
+.treinadores-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: 1rem;
+}
+
+.treinador {
+  padding: 1rem;
+  border: 2px solid var(--borda);
+  border-radius: 1.1rem;
+  background: var(--superficie);
+}
+
+.treinador-cabeca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.treinador-cabeca h3 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 1.35rem;
+}
+
+.insignias {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.insignias-pontos {
+  display: grid;
+  grid-template-columns: repeat(9, 0.6rem);
+  gap: 0.18rem;
+}
+
+.insignias-pontos i {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--trilho);
+}
+
+.insignias-pontos i.cheia {
+  background: var(--amarelo);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--amarelo) 50%, var(--tinta));
+}
+
+.insignias-numero {
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.treinador-time {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.2rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.time-membro {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  padding: 0.4rem 0.2rem;
+  border: 2px solid color-mix(in srgb, var(--cor-tipo) 50%, var(--borda));
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--cor-tipo) 12%, transparent);
+  color: inherit;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.time-membro:hover {
+  border-color: var(--cor-tipo);
+}
+
+.time-membro:focus-visible {
+  outline: 3px solid var(--lente);
+  outline-offset: 2px;
+}
+
+.time-membro img {
+  width: 3.4rem;
+  height: 3.4rem;
+  object-fit: contain;
+}
+
+.time-membro small {
+  color: var(--texto-suave);
+  font-weight: 500;
+}

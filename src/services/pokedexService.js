@@ -1,4 +1,18 @@
-import dados from "../data/pokedex-data.json";
+const base = import.meta.env.VITE_API_URL || "/api";
+async function requisicao(caminho, opcoes) {
+  const resposta = await fetch(`${base}${caminho}`, opcoes);
+  if (!resposta.ok) {
+    const erro = await resposta.json().catch(() => ({}));
+    throw new Error(erro.message || `Erro na API (${resposta.status})`);
+  }
+  return resposta.status === 204 ? null : resposta.json();
+}
+export const carregarPokemons = () => requisicao("/pokemons");
+export const carregarTreinadores = () => requisicao("/trainers");
+export const salvarPokemon = (pokemon, editar) => requisicao(`/pokemons${editar ? `/${pokemon.id}` : ""}`, {
+  method: editar ? "PUT" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pokemon)
+});
+export const excluirPokemon = (id) => requisicao(`/pokemons/${id}`, { method: "DELETE" });
 
 /**
  * Regras da Pokédex: leitura, busca, filtro e ordenação dos dados do
@@ -70,22 +84,22 @@ export const tipoPrincipal = (pokemon) => pokemon.types[0]?.name ?? "Typeless";
 export const urlImagem = (id) =>
   `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
 
-export const listarPokemon = () => dados.pokemon;
 
-export const buscarPorId = (id) => dados.pokemon.find((p) => p.id === id) ?? null;
 
-export function listarTipos() {
-  const usados = new Set(dados.pokemon.flatMap((p) => p.types.map((t) => t.name)));
-  return dados.types.filter((t) => usados.has(t.name)).map((t) => t.name);
+
+
+export function listarTipos(pokemons) {
+  const usados = new Set(pokemons.flatMap((p) => p.types.map((t) => t.name)));
+  return [...usados].sort();
 }
 
 
-export function filtrar(busca = "", tipo = "", idsPermitidos = null) {
+export function filtrar(pokemons, busca = "", tipo = "", idsPermitidos = null) {
   const termo = normalizar(busca).replace(/^#/, "");
   const numerico = /^\d+$/.test(termo);
   const semZeros = termo.replace(/^0+/, "");
 
-  return dados.pokemon.filter((p) => {
+  return pokemons.filter((p) => {
     if (idsPermitidos && !idsPermitidos.includes(p.id)) return false;
     if (tipo && !p.types.some((t) => t.name === tipo)) return false;
     if (!termo) return true;
@@ -102,16 +116,10 @@ export function ordenar(lista, criterio = "id") {
   return copia.sort((a, b) => b.stats[criterio] - a.stats[criterio] || a.id - b.id);
 }
 
-export const sortearPokemon = () =>
-  dados.pokemon[Math.floor(Math.random() * dados.pokemon.length)];
-
-export function listarTreinadores() {
-  return dados.trainers.map((t) => ({
-    ...t,
-    pokemon: t.pokemonIds.map(buscarPorId).filter(Boolean),
-  }));
+export const sortearPokemon = (pokemons) => pokemons[Math.floor(Math.random() * pokemons.length)];
+export function listarTreinadores(treinadores, pokemons) {
+  return treinadores.map((t) => ({ ...t, pokemon: t.pokemonIds.map((id) => pokemons.find((p) => p.id === id)).filter(Boolean) }));
 }
-
-export function treinadoresDoPokemon(id) {
-  return dados.trainers.filter((t) => t.pokemonIds.includes(id)).map((t) => t.name);
+export function treinadoresDoPokemon(treinadores, id) {
+  return treinadores.filter((t) => t.pokemonIds.includes(id)).map((t) => t.name);
 }

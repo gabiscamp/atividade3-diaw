@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import CompareModal from "./components/CompareModal/CompareModal";
 import EmptyState from "./components/EmptyState/EmptyState";
 import Header from "./components/Header/Header";
@@ -11,13 +11,14 @@ import usePersistentState from "./hooks/usePersistentState";
 import useTema from "./hooks/useTema";
 import {
   OPCOES_ORDENACAO,
-  buscarPorId,
+  carregarPokemons, carregarTreinadores, salvarPokemon, excluirPokemon,
   filtrar,
-  listarPokemon,
+
   listarTipos,
   ordenar,
   sortearPokemon,
 } from "./services/pokedexService";
+import PokemonForm from "./components/PokemonForm";
 import "./App.css";
 
 /**
@@ -38,13 +39,36 @@ function App() {
   const [comparar, setComparar] = useState([]); // até 2 IDs
   const [comparando, setComparando] = useState(false);
 
-  const tipos = useMemo(() => listarTipos(), []);
-  const total = listarPokemon().length;
+  const [dados, setDados] = useState([]);
+  const [treinadores, setTreinadores] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
+  const [formulario, setFormulario] = useState(null);
+  const carregar = useCallback(async () => {
+    setCarregando(true); setErro("");
+    try { const [ps, ts] = await Promise.all([carregarPokemons(), carregarTreinadores()]); setDados(ps); setTreinadores(ts); }
+    catch (e) { setErro(`Não foi possível carregar a Pokédex: ${e.message}`); }
+    finally { setCarregando(false); }
+  }, []);
+  useEffect(() => { carregar(); }, [carregar]);
+  const buscarPorId = (id) => dados.find((p) => p.id === id);
+  const tipos = useMemo(() => listarTipos(dados), [dados]);
+  const total = dados.length;
+  const salvar = async (pokemon, editar) => {
+    const salvo = await salvarPokemon(pokemon, editar);
+    setDados((atual) => editar ? atual.map((p) => p.id === salvo.id ? salvo : p) : [...atual, salvo]);
+    setFormulario(null); setSelecionadoId(null);
+  };
+  const excluir = async (pokemon) => {
+    if (!window.confirm(`Excluir ${pokemon.name}? Esta ação não pode ser desfeita.`)) return;
+    try { await excluirPokemon(pokemon.id); setDados((atual) => atual.filter((p) => p.id !== pokemon.id)); setComparar((atual) => atual.filter((id) => id !== pokemon.id)); setFavoritos((atual) => atual.filter((id) => id !== pokemon.id)); setSelecionadoId(null); }
+    catch (e) { setErro(`Não foi possível excluir: ${e.message}`); }
+  };
 
   // estado derivado: a lista exibida depende de busca, tipo, favoritos e ordem
   const pokemons = useMemo(
-    () => ordenar(filtrar(busca, tipo, somenteFavoritos ? favoritos : null), ordem),
-    [busca, tipo, somenteFavoritos, favoritos, ordem]
+    () => ordenar(filtrar(dados, busca, tipo, somenteFavoritos ? favoritos : null), ordem),
+    [dados, busca, tipo, somenteFavoritos, favoritos, ordem]
   );
 
   const temFiltro = busca !== "" || tipo !== "" || somenteFavoritos;
@@ -74,7 +98,8 @@ function App() {
   const fecharComparacao = useCallback(() => setComparando(false), []);
 
   const abrirAleatorio = () => {
-    const sorteado = sortearPokemon();
+    const sorteado = sortearPokemon(dados);
+    if (!sorteado) return;
     setAba("pokedex");
     setSelecionadoId(sorteado.id);
   };
@@ -87,10 +112,13 @@ function App() {
       <Header aba={aba} onTrocarAba={setAba} tema={tema} onAlternarTema={alternarTema} total={total} />
 
       <main className="container">
+        {erro && <p role="alert" className="api-erro">{erro} <button type="button" className="botao" onClick={carregar}>Tentar novamente</button></p>}
+        {carregando && <p role="status">Carregando Pokédex...</p>}
         {aba === "pokedex" ? (
           <>
             <div className="barra-ferramentas">
               <SearchBar valor={busca} onChange={setBusca} />
+              <button type="button" className="botao botao-primario" onClick={() => setFormulario({})}>+ Cadastrar Pokémon</button>
 
               <label className="campo-ordem">
                 <span>Ordenar por</span>
@@ -151,7 +179,7 @@ function App() {
             )}
           </>
         ) : (
-          <TrainerList onAbrirPokemon={setSelecionadoId} />
+          <TrainerList onAbrirPokemon={setSelecionadoId} dadosTreinadores={treinadores} pokemons={dados} />
         )}
       </main>
 
@@ -179,6 +207,9 @@ function App() {
       {selecionado && (
         <PokemonDetails
           pokemon={selecionado}
+          treinadoresDados={treinadores}
+          onEditar={(p) => setFormulario(p)}
+          onExcluir={excluir}
           favorito={favoritos.includes(selecionado.id)}
           comparando={comparar.includes(selecionado.id)}
           onFechar={fecharDetalhes}
@@ -186,6 +217,8 @@ function App() {
           onComparar={alternarComparacao}
         />
       )}
+
+      {formulario && <PokemonForm pokemon={formulario.id ? formulario : null} onSalvar={salvar} onFechar={() => setFormulario(null)} />}
 
       {comparando && compA && compB && <CompareModal a={compA} b={compB} onFechar={fecharComparacao} />}
     </>

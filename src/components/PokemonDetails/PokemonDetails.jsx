@@ -13,10 +13,10 @@ import TypeBadge from "../TypeBadge/TypeBadge";
 import "./PokemonDetails.css";
 
 /** Modal com os detalhes de um Pokémon. Fecha com Esc, clique fora ou no botão. */
-function PokemonDetails({ pokemon, favorito, comparando, onFechar, onFavoritar, onComparar }) {
+function PokemonDetails({ pokemon, favorito, comparando, onFechar, onFavoritar, onComparar, treinadoresDados, onEditar, onExcluir }) {
   const [imagemFalhou, setImagemFalhou] = useState(false);
   const cor = CORES_TIPOS[tipoPrincipal(pokemon)];
-  const treinadores = treinadoresDoPokemon(pokemon.id);
+  const treinadores = treinadoresDoPokemon(treinadoresDados, pokemon.id);
 
   useEffect(() => {
     const aoTeclar = (e) => e.key === "Escape" && onFechar();
@@ -60,6 +60,8 @@ function PokemonDetails({ pokemon, favorito, comparando, onFechar, onFavoritar, 
               ))}
             </div>
             <div className="detalhes-botoes">
+              <button type="button" className="botao" onClick={() => onEditar(pokemon)}>Editar</button>
+              <button type="button" className="botao" onClick={() => onExcluir(pokemon)}>Excluir</button>
               <button
                 type="button"
                 className={`botao ${favorito ? "botao-ativo" : ""}`}

@@ -4,9 +4,9 @@ import EmptyState from "../EmptyState/EmptyState";
 import "./TrainerList.css";
 
 /** Área de treinadores: nome, insígnias e os Pokémon de cada um. */
-function TrainerList({ onAbrirPokemon }) {
+function TrainerList({ onAbrirPokemon, dadosTreinadores, pokemons }) {
   const [busca, setBusca] = useState("");
-  const treinadores = useMemo(() => listarTreinadores(), []);
+  const treinadores = useMemo(() => listarTreinadores(dadosTreinadores, pokemons), [dadosTreinadores, pokemons]);
 
   const visiveis = treinadores.filter((t) => t.name.toLowerCase().includes(busca.trim().toLowerCase()));
 
